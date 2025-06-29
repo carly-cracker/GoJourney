@@ -22,7 +22,6 @@ class Like(db.Model):
     trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True) 
    
-
     __table_args__ = (
-        db.UniqueConstraint('trip_id', 'ip_address', name='unique_like_by_ip'),
+        db.UniqueConstraint('trip_id', 'user_id', name='unique_user_trip_like'),
     )
