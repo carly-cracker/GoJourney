@@ -36,34 +36,30 @@ git clone https://github.com/carly-cracker/GoJourney.git
 cd GoJourney
  Backend Setup (/GoJourney root directory)
 2. Create .env in project root
+>>>> touch .env
+>>>>nano .env
 
-nano .env
 Paste this:
-
-env
-Copy
-Edit
 DATABASE_URL=postgresql://<username>:<password>@localhost:5432/<db_name>
 JWT_SECRET_KEY=your_jwt_secret
 SECRET_KEY=your_flask_secret
-3. Load environment variables
 
+3. Load environment variables
 # From the /GoJourney directory
 set -a && source .env && set +a
+
 Verify:
-
-
 echo $DATABASE_URL
-4. Set Flask app and environment
 
+4. Set Flask app and environment
 export FLASK_APP=server.app
 export FLASK_ENV=development
 ###You must be inside /GoJourney when running this.
 
 5. Install dependencies
-
 pip install -r server/requirements.txt
 pip install flask_cors  # if not already installed
+
 6. Create DB in Postgres (psql CLI)
 
 psql -U postgres
@@ -82,8 +78,7 @@ flask run --port=5555
 Should be live at: http://localhost:5555
 
 Frontend Setup (/GoJourney/client)
-
-cd client
+>>> cd client
 
 npm install
 npm run dev
@@ -112,9 +107,10 @@ psql -h localhost -U postgres -d <db_name>
 >>>> \dt --->shows the data in the db after migration.
 SELECT * FROM users;
 UPDATE users SET is_admin = true WHERE username = '<user_created from the app during signup>';
+```
 ![Screenshot from 2025-06-29 19-21-06](https://github.com/user-attachments/assets/08c7655b-1b21-4691-92d6-5888fdd3d25f)
 
-
+```
 Features
 JWT Auth (sign up, login, logout)
 
