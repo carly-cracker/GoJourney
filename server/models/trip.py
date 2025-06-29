@@ -1,4 +1,4 @@
-from app import db
+from ..extensions import db
 from datetime import datetime
 
 class Trip(db.Model):
@@ -11,7 +11,7 @@ class Trip(db.Model):
     image_url = db.Column(db.String)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
-
+    flagged = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     likes = db.relationship('Like', backref='trip', cascade='all, delete')
 
@@ -21,6 +21,8 @@ class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True) 
-    ip_address = db.Column(db.String, nullable=False)
+   
 
-    __table_args__ = (db.UniqueConstraint('trip_id', 'ip_address', name='unique_like_by_ip'),)
+    __table_args__ = (
+        db.UniqueConstraint('trip_id', 'ip_address', name='unique_like_by_ip'),
+    )
