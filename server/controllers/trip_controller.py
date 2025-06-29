@@ -1,11 +1,23 @@
 from flask import jsonify, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from app import db
-from models.trip import Trip, Like
-from models.user import User
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
+from ..extensions import db
+from ..models.trip import Trip, Like
+from ..models.user import User
+from sqlalchemy import or_, false
+
+
 
 def get_all_trips():
-    trips = Trip.query.order_by(Trip.created_at.desc()).all()
+    try:
+        verify_jwt_in_request(optional=True)
+        user_id = get_jwt_identity()
+    except Exception:
+        user_id = None
+
+    
+    trips = Trip.query.filter(or_(Trip.flagged == false(), Trip.flagged == None)).order_by(Trip.created_at.desc()).all()
+
+
     return jsonify([{
         "id": t.id,
         "title": t.title,
@@ -16,7 +28,7 @@ def get_all_trips():
         "like_count": len(t.likes),
         "author_id": t.user_id,
         "author_username": t.author.username,
-        "is_liked": any(like.ip_address == request.remote_addr for like in t.likes)
+        "is_liked": any(l.user_id == user_id for l in t.likes) if user_id else False
     } for t in trips]), 200
 
 @jwt_required()
@@ -30,7 +42,8 @@ def get_my_trips():
         "location": t.location,
         "image_url": t.image_url,
         "created_at": t.created_at.isoformat(),
-        "like_count": len(t.likes)
+        "like_count": len(t.likes),
+        "flagged": t.flagged 
     } for t in trips]), 200
 
 @jwt_required()
@@ -75,22 +88,61 @@ def delete_trip(id):
     db.session.commit()
     return jsonify({"message": "Trip deleted"}), 200
 
-def like_trip_public(trip_id):
-    ip_address = request.remote_addr
+@jwt_required()
+def flag_trip(id):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user or not user.is_admin:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    trip = Trip.query.get_or_404(id)
+    trip.flagged = True
+    db.session.commit()
+    return jsonify({"message": "Trip flagged successfully"}), 200
+
+@jwt_required()
+def unflag_trip(id):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user or not user.is_admin:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    trip = Trip.query.get_or_404(id)
+    if not trip.flagged:
+        return jsonify({"message": "Trip is not flagged"}), 400
+
+    trip.flagged = False
+    db.session.commit()
+    return jsonify({"message": "Trip unflagged successfully"}), 200
+
+
+
+
+@jwt_required()
+def like_trip(trip_id):
+    user_id = get_jwt_identity()
     trip = Trip.query.get_or_404(trip_id)
 
-    existing_like = Like.query.filter_by(trip_id=trip.id, ip_address=ip_address).first()
+    existing_like = Like.query.filter_by(trip_id=trip.id, user_id=user_id).first()
     if existing_like:
         db.session.delete(existing_like)
         db.session.commit()
-        return jsonify({"message": "Unliked", "liked": False, "like_count": len(trip.likes)}), 200
+        return jsonify({
+            "message": "Unliked",
+            "liked": False,
+            "like_count": len(trip.likes)
+        }), 200
 
-    new_like = Like(trip_id=trip.id, ip_address=ip_address)
+    new_like = Like(trip_id=trip.id, user_id=user_id)
     db.session.add(new_like)
     db.session.commit()
-
-    return jsonify({"message": "Liked", "liked": True, "like_count": len(trip.likes)}), 201
-
+    return jsonify({
+        "message": "Liked",
+        "liked": True,
+        "like_count": len(trip.likes)
+    }), 201
 @jwt_required()
 def get_all_users():
     user_id = get_jwt_identity()
@@ -197,26 +249,7 @@ def get_all_trips_admin():
         "created_at": t.created_at.isoformat(),
         "author_id": t.user_id,
         "author_username": t.author.username,
-        "likes": len(t.likes)
+        "likes": len(t.likes),
+        "flagged": t.flagged 
     } for t in trips]), 200
 
-@jwt_required()
-def get_all_trips_admin():
-    user_id = get_jwt_identity()
-    admin = User.query.get(user_id)
-
-    if not admin or not admin.is_admin:
-        return jsonify({"error": "Unauthorized"}), 403
-
-    trips = Trip.query.order_by(Trip.created_at.desc()).all()
-    return jsonify([{
-        "id": t.id,
-        "title": t.title,
-        "location": t.location,
-        "description": t.description,
-        "image_url": t.image_url,
-        "created_at": t.created_at.isoformat(),
-        "author_id": t.user_id,
-        "author_username": t.author.username,
-        "likes": len(t.likes)
-    } for t in trips]), 200
