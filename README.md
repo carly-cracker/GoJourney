@@ -1,5 +1,5 @@
 
-#GoJourney Adventures
+GoJourney Adventures
 
 Gojourney is a fullstack travel experience sharing platform where users can:
 - Share their travel adventures
@@ -81,33 +81,28 @@ Edit
 psql -U postgres
 CREATE DATABASE <db_name>;
 7. Run DB migrations
-bash
-Copy
-Edit
+
 # Still inside /GoJourney
 flask db init          # Only once
 flask db migrate -m "Initial migration"
 flask db upgrade
+
 8. Run Flask server
-bash
-Copy
-Edit
+
 flask run --port=5555
+
 Should be live at: http://localhost:5555
 
 Frontend Setup (/GoJourney/client)
-bash
-Copy
-Edit
+
 cd client
+
 npm install
 npm run dev
 App will be live at: http://localhost:5173
 
 Project Structure
-bash
-Copy
-Edit
+
 GoJourney/
 ├── client/               # React frontend
 ├── server/               # Flask backend
@@ -144,7 +139,7 @@ Flag & manage content
 
 
 
-Cliff, Deborah, **Maxwell** & Carlos – built with love 💖
+Cliff, Deborah, ***Maxwell*** & Carlos – built with love 💖
 
 
 
