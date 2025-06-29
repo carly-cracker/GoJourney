@@ -9,13 +9,13 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // On mount: look for token, decode it (to get userId), then fetch /auth/profile
+  
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (token) {
       try {
         const { sub: id } = jwtDecode(token)
-        api.get(`/auth/profile`)          // you need a GET /auth/profile endpoint returning { id, username, email, is_admin }
+        api.get(`/auth/profile`)          
           .then(res => setUser(res.data))
           .catch(() => {
             localStorage.removeItem('token')
@@ -33,7 +33,6 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password })
     localStorage.setItem('token', res.data.token)
-    // assume backend returns { token, user: { id, username, email, is_admin } }
     setUser(res.data.user)
   }
 
@@ -56,7 +55,7 @@ export function AuthProvider({ children }) {
   )
 }
 
-// hook to use in components:
+
 export function useAuth() {
   return useContext(AuthContext)
 }

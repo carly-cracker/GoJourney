@@ -14,18 +14,16 @@ import os
 SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 
 
-
-
 app = Flask(__name__)
 app.config.from_object(Config)
-
 CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 db.init_app(app)
 migrate.init_app(app, db)
 bcrypt.init_app(app)
 jwt.init_app(app)
 
-app.secret_key = os.environ.get("SECRET_KEY", "supersecret")
+
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "supersecret")
 google_bp = make_google_blueprint(
     client_id=os.environ["GOOGLE_CLIENT_ID"],
     client_secret=os.environ["GOOGLE_CLIENT_SECRET"],
@@ -94,19 +92,15 @@ def google_login_callback():
 @app.route("/trips", methods=["GET"])
 def trips():
     return get_all_trips()
-
 @app.route("/admin/trips/<int:id>/flag", methods=["PUT"])
 @jwt_required()
 def admin_flag_trip(id):
     return flag_trip(id)
-
 @app.route("/admin/trips/<int:id>/unflag", methods=["PUT"])
 @jwt_required()
 def admin_unflag_trip(id):
     from .controllers.trip_controller import unflag_trip
     return unflag_trip(id)
-
-
 
 @app.route("/trips", methods=["POST"])
 @jwt_required()
@@ -129,7 +123,6 @@ def my_posts():
     return get_my_trips()
 
 @app.route("/trips/<int:trip_id>/like", methods=["POST"])
-@jwt_required()
 def like(trip_id):
     return like_trip(trip_id)
 

@@ -4,7 +4,6 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 
 
-# Initialize the extensions (but not app-bound yet)
 db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
