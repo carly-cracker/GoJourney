@@ -125,7 +125,7 @@ Admin dashboard
 Search trips
 
 Flag & manage content
-
+```
 
 PHOTOS 
 ![Screenshot from 2025-06-29 19-33-23](https://github.com/user-attachments/assets/a5dee33f-e9d1-4c8d-8dab-4a17550c646d)
@@ -136,6 +136,7 @@ PHOTOS
 ![Screenshot from 2025-06-29 19-35-39](https://github.com/user-attachments/assets/424f636b-cae7-4db2-9639-4e921aaa156e)
 ![Screenshot from 2025-06-29 19-36-15](https://github.com/user-attachments/assets/068e4624-311e-4f6d-8a83-b8e6af3476d8)
 ![Screenshot from 2025-06-29 19-24-45](https://github.com/user-attachments/assets/971f1a3e-714f-47a3-8f99-3062b5dce32e)
+
 
 
 
