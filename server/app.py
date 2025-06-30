@@ -7,7 +7,7 @@ from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
 from flask_jwt_extended import jwt_required, create_access_token
 
-from .extensions import db, migrate, bcrypt, jwt
+from server.extensions import db, migrate, bcrypt, jwt
 from .config import Config
 
 import os
