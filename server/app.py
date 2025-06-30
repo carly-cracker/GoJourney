@@ -19,7 +19,7 @@ SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 app = Flask(__name__)
 app.config.from_object(Config)
 
-CORS(app, supports_credentials=True, origins=["https://gojourney-ozj4.onrender.com/"])
+CORS(app, supports_credentials=True, origins=["https://gojourney-ozj4.onrender.com"])
 db.init_app(app)
 migrate.init_app(app, db)
 bcrypt.init_app(app)
