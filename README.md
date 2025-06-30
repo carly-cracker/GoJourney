@@ -84,6 +84,8 @@ npm install
 npm run dev
 App will be live at: http://localhost:5173
 
+-for live demo and testing https://gojourney-ozj4.onrender.com/
+
 Project Structure
 
 GoJourney/
