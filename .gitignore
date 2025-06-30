@@ -10,7 +10,6 @@ instance/
 *.sqlite3
 *.db
 
-migrations/
 
 *.log
 *.tmp
