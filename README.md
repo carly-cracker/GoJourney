@@ -26,6 +26,8 @@ Gojourney is a fullstack travel experience sharing platform where users can:
 - Marshmallow
 
 ---
+### DEPLOYED LINK ON RENDER
+https://gojourney-ozj4.onrender.com/
 
 ##  Installation & Setup
 
